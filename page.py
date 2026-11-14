@@ -30,6 +30,11 @@ pre.globe { margin: 0; font: 12px/12px ui-monospace, Menlo, Consolas, monospace;
 pre.globe .l { color: var(--land); } pre.globe .s { color: var(--sea); }
 pre.globe .n { color: var(--night); }
 @media (max-width: 600px) { pre.globe { font-size: 7px; line-height: 7px; } }
+.game { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+canvas.run { display: block; width: min(100%, 460px, calc((100vh - 120px) * 0.75));
+             aspect-ratio: 3 / 4; border-radius: 12px; touch-action: none;
+             box-shadow: 0 6px 24px rgba(0,0,0,.2); }
+.game p { margin: 0; color: var(--muted); font-size: 13px; }
 """
 
 HELLO_BODY = "<h1>Hello World</h1>"
@@ -104,9 +109,20 @@ if (!reduce) requestAnimationFrame(tick);
 </script>"""
 
 
+def _run_body() -> str:
+    script = (ROOT / "assets" / "run.js").read_text(encoding="utf-8")
+    return (
+        '<div class="game">'
+        '<canvas class="run" id="run" aria-label="Canyon Dash ゲーム画面"></canvas>'
+        "<p>岩はよけて、低い柵はジャンプ、赤いバーはスライディングでくぐろう</p>"
+        "</div>\n<script>\n" + script + "</script>"
+    )
+
+
 PAGES = {
     "index.html": ("Hello", lambda: HELLO_BODY),
     "earth.html": ("Earth", _earth_body),
+    "run.html": ("Run", _run_body),
 }
 
 
