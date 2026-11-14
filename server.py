@@ -1,16 +1,20 @@
-"""Hello World を返す Python Web サーバー（開発用・標準ライブラリのみ）。
+"""page.py のページを返す Python Web サーバー（開発用・標準ライブラリのみ）。
 
 使い方: python server.py [port]  → http://localhost:8000
 """
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from page import render
+from page import PAGES, render
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
-        body = render().encode("utf-8")
+        name = self.path.split("?")[0].lstrip("/") or "index.html"
+        if name not in PAGES:
+            self.send_error(404)
+            return
+        body = render(name).encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
